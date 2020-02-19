@@ -1,65 +1,70 @@
 let router = require("express").Router();
-let Post = require("../db").import("../models/post");
+let sequelize = require("../db");
+let Profile = sequelize.import("../models/profile");
 
 router.get("/mine", (req, res) => {
-  Post.findAll({
-    where: { userId: req.user.id }
+  Profile.findAll({
+    where: {
+      userId: req.user.id
+    }
   })
-    .then(post => res.status(200).json(post))
+    .then(profile => res.status(200).json(profile))
     .catch(err => res.status(500).json({ error: err }));
 });
 
 router.post("/create", (req, res) => {
-  let title = req.body.title;
-  let feeling = req.body.feeling;
-  let body = req.body.body;
+  let name = req.body.name;
+  let animal = req.body.animal;
+  let gender = req.body.gender;
+  let bio = req.body.bio;
   let userId = req.user.id;
 
-  Post.create({
-    title: title,
-    feeling: feeling,
-    body: body,
+  Profile.create({
+    name: name,
+    animal: animal,
+    gender: gender,
+    bio: bio,
     userId: userId
   })
-    .then(post => res.status(200).json(post))
+    .then(profile => res.status(200).json(profile))
     .catch(err => res.json(err.message));
 });
 
 router.get("/:id", (req, res) => {
-  Post.findOne({
+  Profile.findOne({
     where: { id: req.params.id, userId: req.user.id },
     include: "user"
   })
-    .then(post =>
+    .then(profile =>
       res.status(200).json({
-        message: "User info is found",
-        post: post
+        message: "Profile info found",
+        profile: profile
       })
     )
     .catch(err => res.status(500).json({ error: err }));
 });
 
 router.put("/:id", (req, res) => {
-  Post.update(req.body, {
+  Profile.update(req.body, {
     where: { id: req.params.id, userId: req.user.id }
   })
     .then(
-      (updateSuccess = comment => {
+      (updateSuccess = profile => {
         res.json({
-          comment: comment,
-          message: "Updated"
+          profile: profile,
+          message: "profile updated"
         });
       })
     )
-    .catch(err => res.status(500).json({ error: err }));
+    .catch(err => err.status(500).json({ error: err }));
 });
 
 router.delete("/:id", (req, res) => {
-  Post.destroy({
+  Profile.destroy({
     where: { id: req.params.id, userId: req.user.id }
   })
     .then(
-      (deletePostSuccess = post => {
+      (deleteProfileSuccess = profile => {
         res.send("profile has been removed");
       })
     )
