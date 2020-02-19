@@ -1,24 +1,23 @@
 module.exports = (sequelize, DataTypes) => {
   const Comment = sequelize.define("comment", {
-    owner: {
-      type: DataTypes.STRING
-    },
-    comment: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    date: {
-      type: DataTypes.DATE,
+    reaction: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    body: {
+      type: DataTypes.STRING,
       allowNull: false
     },
-    time: {
-      type: DataTypes.TIME,
-      allowNull: false
+    userId: {
+      type: DataTypes.INTEGER
+    },
+    postId: {
+      type: DataTypes.INTEGER
     }
   });
-
-  // Comment.associate = models => {
-  //   Comment.belongsTo(models.post, { as: "post", foreignKey: "postId" });
-  // };
   return Comment;
 };

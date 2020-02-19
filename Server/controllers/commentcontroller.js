@@ -1,35 +1,50 @@
 let router = require("express").Router();
 let Comment = require("../db").import("../models/comment.js");
-const validateSession = require("../middleware/validateSession");
+let Post = require("../db").import("../models/post.js");
 
-router.get("/mycomment", validateSession, (req, res) => {
+router.get("/mine", (req, res) => {
   Comment.findAll({
-    where: { owner: req.user.id }
+    where: { userId: req.user.id }
   })
     .then(comment => res.status(200).json(comment))
     .catch(err => res.status(500).json({ error: err }));
 });
 
-router.post("/", (req, res) => {
-  let owner = req.user.lastname;
-  let comment = req.body.comment;
-  let date = req.body.date;
-  let time = req.body.time;
-
-  Comment.create(owner, comment, date, time)
-    .then(comment => res.status(200).json(comment))
+router.post("/create/:id", (req, res) => {
+  let title = req.body.title;
+  let reaction = req.body.reaction;
+  let body = req.body.body;
+  let userId = req.user.id;
+  Post.findOne({ where: { id: req.params.id } })
+    .then(data =>
+      Comment.create({
+        title: title,
+        reaction: reaction,
+        body: body,
+        userId: userId,
+        postId: data.id
+      })
+    )
+    .then(comment => res.json({ comment: comment }))
     .catch(err => res.json(err.message));
 });
 
 router.get("/:id", (req, res) => {
-  Comment.findOne({ where: { id: req.params.id, owner: req.user.id } })
-    .then(comment => res.status(200).json(comment))
+  Comment.findOne({
+    where: { id: req.params.id, userId: req.user.id }
+  })
+    .then(comment =>
+      res.status(200).json({
+        message: "comment info is found",
+        comment: comment
+      })
+    )
     .catch(err => res.status(500).json({ error: err }));
 });
 
-router.put("/:id", validateSession, (req, res) => {
+router.put("/:id", (req, res) => {
   Comment.update(req.body, {
-    where: { id: req.params.id, owner: req.user.id }
+    where: { id: req.params.id, userId: req.user.id }
   })
     .then(
       (updateSuccess = comment => {
@@ -42,19 +57,20 @@ router.put("/:id", validateSession, (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
-router.delete("/:id", validateSession, (req, res) => {
-  let userid = req.user.id;
-  let data = req.params.id;
+router.delete("/:id", (req, res) => {
   Comment.destroy({
-    where: { owner: userid, id: data }
-  }).then(
-    (deleteComment = comment => {
-      res.send("Review has been removed");
-    }),
-    (deleteError = err => {
-      res.send(500, err.message);
-    })
-  );
+    where: { id: req.params.id, userId: req.user.id }
+  })
+    .then(
+      (deleteCommentSuccess = comment => {
+        res.send("profile has been removed");
+      })
+    )
+    .catch(
+      (deleteError = err => {
+        res.send(500, err.message);
+      })
+    );
 });
 
 module.exports = router;
