@@ -2,7 +2,7 @@ let jwt = require("jsonwebtoken");
 let User = require("../db").import("../models/user");
 
 const validateSession = (req, res, next) => {
-  if (req.method === "OPTIONS") {
+  if (req.method == "OPTIONS") {
     next();
   } else {
     const token = req.headers.authorization;
@@ -14,6 +14,7 @@ const validateSession = (req, res, next) => {
           .then(user => {
             if (!user) throw err;
             req.user = user;
+            console.log("this is the user", user);
             return next();
           })
           .catch(err => next(err));
