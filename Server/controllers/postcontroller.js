@@ -1,7 +1,7 @@
 let router = require("express").Router();
 let Post = require("../db").import("../models/post");
 let User = require("../db").import("../models/user");
-// let Comment = require("../db").import("../models/comment");
+let Comment = require("../db").import("../models/comment");
 
 router.get("/mine", (req, res) => {
   Post.findAll({
@@ -37,8 +37,8 @@ router.post("/create", function(req, res) {
 
 router.get("/:id", (req, res) => {
   Post.findOne({
-    where: { id: req.params.id, userId: req.user.id },
-    include: "user"
+    where: { id: req.params.id, userId: req.user.id }
+    // include: "comment"
   })
     .then(post =>
       res.status(200).json({
@@ -70,7 +70,7 @@ router.delete("/:id", (req, res) => {
   })
     .then(
       (deletePostSuccess = post => {
-        res.send("profile has been removed");
+        res.send("post has been removed");
       })
     )
     .catch(

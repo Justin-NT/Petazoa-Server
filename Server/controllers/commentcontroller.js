@@ -64,7 +64,7 @@ router.delete("/:id", (req, res) => {
   })
     .then(
       (deleteCommentSuccess = comment => {
-        res.send("profile has been removed");
+        res.send("comment has been removed");
       })
     )
     .catch(

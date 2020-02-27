@@ -27,11 +27,11 @@ const Profile = sequelize.import("./models/profile");
 const Comments = sequelize.import("./models/comment");
 
 // Users.hasMany(Posts);
-// Posts.belongsTo(Users, { foreignKey: "userId", targetKey: "email" });
+// Posts.belongsTo(Users, { foreignKey: "userId" });
 
 // Users.hasMany(Comments);
-// Comments.belongsTo(Users, { foreignKey: "userId" });
-
+// Comments.belongsTo(Users, { foreignKey: "userForTheCommentId" });
+// Comments.belongsTo(Posts, { foreignKey: "postId" });
 // Posts.hasMany(Comments);
 // Comments.belongsTo(Posts);
 
