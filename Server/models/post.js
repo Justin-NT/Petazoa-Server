@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 
   let User = sequelize.import("./user");
   Post.belongsTo(User, { foreignKey: "userId" });
+  User.hasMany(Post);
 
   return Post;
 };
