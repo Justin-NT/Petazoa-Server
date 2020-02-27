@@ -11,10 +11,13 @@ module.exports = (sequelize, DataTypes) => {
     body: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    userId: {
-      type: DataTypes.INTEGER
     }
   });
+
+  let User = sequelize.import("./user");
+  Post.belongsTo(User, { foreignKey: "userId" });
+  // Post.associate = function(models) {
+  //   Post.hasMany(models.comment, { as: "comments", foreignKey: "postId" });
+  // };
   return Post;
 };

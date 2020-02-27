@@ -18,27 +18,26 @@ router.post("/signup", (req, res) => {
     email: email,
     password: bcrypt.hashSync(password, 13),
     admin: admin
-  }).then(
-    (createSuccess = user => {
-      let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: 60 * 60 * 24
-      });
+  })
+    .then(
+      (createSuccess = user => {
+        let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+          expiresIn: 60 * 60 * 24
+        });
 
-      res.json({
-        user: user,
-        message: "User created",
-        sessionToken: token
-      });
-    })(
-      (createError = err => {
-        res.send(
-          500,
-          "Improper signup, requires 8 total characters with 1 special character"
-        );
-        console.log(err);
+        res.json({
+          user: user,
+          message: "User created",
+          sessionToken: token
+        });
       })
     )
-  );
+    .catch(
+      (createError = err => {
+        res.send(500, "Improper signup", err.message);
+        console.log(err);
+      })
+    );
 });
 
 router.post("/signin", (req, res) => {

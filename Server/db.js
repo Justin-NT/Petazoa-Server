@@ -1,9 +1,14 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  host: "localhost",
-  dialect: "postgres"
-});
+const sequelize = new Sequelize(
+  "Social-Pet-Site",
+  "postgres",
+  process.env.PASS,
+  {
+    host: "localhost",
+    dialect: "postgres"
+  }
+);
 
 sequelize.authenticate().then(
   function() {
@@ -16,21 +21,21 @@ sequelize.authenticate().then(
 
 // database associations - all routes to user, with comments connected to the post
 
-User = sequelize.import("./models/user");
-Post = sequelize.import("./models/post");
-Comment = sequelize.import("./models/comment");
-Profile = sequelize.import("./models/profile");
+const Users = sequelize.import("./models/user");
+const Posts = sequelize.import("./models/post");
+const Profile = sequelize.import("./models/profile");
+const Comments = sequelize.import("./models/comment");
 
-User.hasOne(Profile);
-Profile.belongsTo(User);
+// Users.hasMany(Posts);
+// Posts.belongsTo(Users, { foreignKey: "userId", targetKey: "email" });
 
-User.hasMany(Post);
-Post.belongsTo(User);
+// Users.hasMany(Comments);
+// Comments.belongsTo(Users, { foreignKey: "userId" });
 
-User.hasMany(Comment);
-Comment.belongsTo(User);
+// Posts.hasMany(Comments);
+// Comments.belongsTo(Posts);
 
-Post.hasMany(Comment);
-Comment.belongsTo(Post);
+Users.hasOne(Profile);
+Profile.belongsTo(Users);
 
 module.exports = sequelize;

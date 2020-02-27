@@ -1,5 +1,6 @@
 let router = require("express").Router();
 let Comment = require("../db").import("../models/comment.js");
+let User = require("../db").import("../models/user");
 let Post = require("../db").import("../models/post.js");
 
 router.get("/mine", (req, res) => {
@@ -11,34 +12,34 @@ router.get("/mine", (req, res) => {
 });
 
 router.post("/create/:id", (req, res) => {
-  let title = req.body.title;
-  let reaction = req.body.reaction;
-  let body = req.body.body;
-  let userId = req.user.id;
-  Post.findOne({ where: { id: req.params.id } })
-    .then(data =>
-      Comment.create({
-        title: title,
-        reaction: reaction,
-        body: body,
-        userId: userId,
-        postId: data.id
-      })
-    )
-    .then(comment => res.json({ comment: comment }))
-    .catch(err => res.json(err.message));
+  // let title = req.body.title;
+  // let reaction = req.body.reaction;
+  // let body = req.body.body;
+  // let userId = req.user.id;
+  Post.findOne({ where: { id: req.params.id } }).then(data => {
+    // User.findOne({
+    // where: { id: req.user.id }
+    // }).then(user =>
+    console.log("THE DATA IS HERE!!!!!!!!!" + data.dataValues.id, req.user.id);
+    Comment.create({
+      // title: req.body.title,
+      // reaction: req.body.reaction,
+      comment: req.body.comment,
+      userId: req.user.id,
+      postId: data.dataValues.id
+    })
+      .then(comment => res.json({ comment: comment }))
+      .catch(err => res.json(err.message));
+    // )
+  });
 });
 
 router.get("/:id", (req, res) => {
-  Comment.findOne({
-    where: { id: req.params.id, userId: req.user.id }
+  Comment.findAll({
+    where: { postId: req.params.id },
+    include: "post"
   })
-    .then(comment =>
-      res.status(200).json({
-        message: "comment info is found",
-        comment: comment
-      })
-    )
+    .then(comment => res.json({ comment: comment }))
     .catch(err => res.status(500).json({ error: err }));
 });
 
