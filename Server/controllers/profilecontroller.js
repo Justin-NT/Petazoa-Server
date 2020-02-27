@@ -1,6 +1,39 @@
 let router = require("express").Router();
 let sequelize = require("../db");
 let Profile = sequelize.import("../models/profile");
+let multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: function(req, file, cb) {
+    checkFileType(file, cb);
+  }
+});
+
+function checkFileType(file, cb) {
+  // Allowed extensions
+  const filetypes = /jpeg|jpg|png|gif/;
+
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype) {
+    return cb(null, true);
+  } else {
+    cb("Error: Images Only!");
+  }
+}
 
 router.get("/mine", (req, res) => {
   Profile.findAll({
@@ -12,19 +45,21 @@ router.get("/mine", (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
-router.post("/create", (req, res) => {
-  let name = req.body.name;
-  let animal = req.body.animal;
-  let gender = req.body.gender;
-  let bio = req.body.bio;
-  let userId = req.user.id;
+router.post("/create", upload.single("profilePicture"), (req, res, next) => {
+  console.log(req.file);
+  // let name = req.body.name;
+  // let animal = req.body.animal;
+  // let gender = req.body.gender;
+  // let bio = req.body.bio;
+  // let userId = req.user.id;
 
   Profile.create({
-    name: name,
-    animal: animal,
-    gender: gender,
-    bio: bio,
-    userId: userId
+    name: req.body.name,
+    animal: req.body.animal,
+    gender: req.body.gender,
+    bio: req.body.bio,
+    userId: req.user.id,
+    profilePicture: req.file.path
   })
     .then(profile => res.status(200).json(profile))
     .catch(err => res.json(err.message));

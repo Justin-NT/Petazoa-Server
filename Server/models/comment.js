@@ -1,23 +1,17 @@
 module.exports = (sequelize, DataTypes) => {
   const Comment = sequelize.define("comment", {
-    title: {
+    comment: {
       type: DataTypes.STRING,
       allowNull: false
-    },
-    reaction: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    body: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    userId: {
-      type: DataTypes.INTEGER
-    },
-    postId: {
-      type: DataTypes.INTEGER
     }
   });
+
+  let User = sequelize.import("./user");
+  let Post = sequelize.import("./post");
+
+  Comment.belongsTo(User, { foreignKey: "userId" });
+
+  Comment.belongsTo(Post, { foreignKey: "postId" });
+
   return Comment;
 };

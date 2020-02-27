@@ -1,5 +1,7 @@
 let router = require("express").Router();
 let Post = require("../db").import("../models/post");
+let User = require("../db").import("../models/user");
+// let Comment = require("../db").import("../models/comment");
 
 router.get("/mine", (req, res) => {
   Post.findAll({
@@ -9,20 +11,28 @@ router.get("/mine", (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
-router.post("/create", (req, res) => {
-  let title = req.body.title;
-  let feeling = req.body.feeling;
-  let body = req.body.body;
-  let userId = req.user.id;
+router.post("/create", function(req, res) {
+  console.log("README", req.user);
 
+  // let title = req.body.title;
+  // let feeling = req.body.feeling;
+  // let body = req.body.body;
+  // let userId = req.user.id;
+
+  // User.findOne({
+  // where: { id: req.user.id }
+  // }).then(user =>
   Post.create({
-    title: title,
-    feeling: feeling,
-    body: body,
-    userId: userId
+    title: req.body.title,
+    feeling: req.body.feeling,
+    body: req.body.body,
+    userId: req.user.id
+    // userId: userId
   })
+    // .then(() => console.log(req.user))
     .then(post => res.status(200).json(post))
     .catch(err => res.json(err.message));
+  // );
 });
 
 router.get("/:id", (req, res) => {
@@ -44,9 +54,9 @@ router.put("/:id", (req, res) => {
     where: { id: req.params.id, userId: req.user.id }
   })
     .then(
-      (updateSuccess = comment => {
+      (updateSuccess = post => {
         res.json({
-          comment: comment,
+          post: post,
           message: "Updated"
         });
       })
