@@ -3,6 +3,8 @@ let Comment = require("../db").import("../models/comment.js");
 let User = require("../db").import("../models/user");
 let Post = require("../db").import("../models/post.js");
 
+//Get all comments assocaited with a specific user
+
 router.get("/mine", (req, res) => {
   Comment.findAll({
     where: { userId: req.user.id }
@@ -11,6 +13,7 @@ router.get("/mine", (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
+//Post a comment
 router.post("/create/:id", (req, res) => {
   // let title = req.body.title;
   // let reaction = req.body.reaction;
@@ -34,6 +37,7 @@ router.post("/create/:id", (req, res) => {
   });
 });
 
+//Get a single comment by the postId
 router.get("/:id", (req, res) => {
   Comment.findAll({
     where: { postId: req.params.id },
@@ -43,6 +47,7 @@ router.get("/:id", (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
+//Update a comment
 router.put("/:id", (req, res) => {
   Comment.update(req.body, {
     where: { id: req.params.id, userId: req.user.id }
@@ -58,6 +63,7 @@ router.put("/:id", (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
+//Delete a comment
 router.delete("/:id", (req, res) => {
   Comment.destroy({
     where: { id: req.params.id, userId: req.user.id }

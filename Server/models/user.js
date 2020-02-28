@@ -18,8 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: { is: /^(?=.[!@#\$%\^&])|(?=.{8,})*$/ }
+      allowNull: false
+      // validate: {
+      // is: /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z]).{8,}$/
+      // }
     },
     admin: {
       type: DataTypes.BOOLEAN,
