@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     bio: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    profilePicture: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   });
   return Profile;
