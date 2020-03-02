@@ -4,7 +4,7 @@ let User = require("../db").import("../models/user");
 let Comment = require("../db").import("../models/comment");
 
 //Grab all posts and the associated comments - good for news feed
-router.get("/mine", (req, res) => {
+router.get("/all", (req, res) => {
   Post.findAll({ include: "comments" }).then(post => {
     Comment.findAll({
       where: { postId: post.id }
