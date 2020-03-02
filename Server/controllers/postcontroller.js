@@ -70,7 +70,7 @@ router.delete("/:id", (req, res) => {
   })
     .then(
       (deletePostSuccess = post => {
-        res.send("post has been removed");
+        res.json({ message: "post has been removed", post: post });
       })
     )
     .catch(

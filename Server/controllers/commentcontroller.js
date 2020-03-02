@@ -5,7 +5,7 @@ let Post = require("../db").import("../models/post.js");
 
 router.get("/mine", (req, res) => {
   Comment.findAll({
-    where: { userId: req.user.id }
+    where: { id: req.params.id }
   })
     .then(comment => res.status(200).json(comment))
     .catch(err => res.status(500).json({ error: err }));
@@ -64,12 +64,12 @@ router.delete("/:id", (req, res) => {
   })
     .then(
       (deleteCommentSuccess = comment => {
-        res.send("comment has been removed");
+        res.json({ message: "comment has been removed" });
       })
     )
     .catch(
       (deleteError = err => {
-        res.send(500, err.message);
+        res.json({ statusCode: 500, message: err.message });
       })
     );
 });
