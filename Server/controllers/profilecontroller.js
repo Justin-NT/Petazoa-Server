@@ -45,7 +45,8 @@ router.get("/mine", (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
-router.post("/create", upload.single("profilePicture"), (req, res, next) => {
+router.post("/create", (req, res, next) => {
+  // upload.single("profilePicture"),
   console.log(req.file);
   // let name = req.body.name;
   // let animal = req.body.animal;
@@ -58,8 +59,8 @@ router.post("/create", upload.single("profilePicture"), (req, res, next) => {
     animal: req.body.animal,
     gender: req.body.gender,
     bio: req.body.bio,
-    userId: req.user.id,
-    profilePicture: req.file.path
+    userId: req.user.id
+    // profilePicture: req.file.path
   })
     .then(profile => res.status(200).json(profile))
     .catch(err => res.json(err.message));
@@ -91,7 +92,7 @@ router.put("/:id", (req, res) => {
         });
       })
     )
-    .catch(err => err.status(500).json({ error: err }));
+    .catch(err => res.sendStatus(500).json({ error: err }));
 });
 
 router.delete("/:id", (req, res) => {

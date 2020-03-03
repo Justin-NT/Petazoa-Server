@@ -19,6 +19,15 @@ router.get("/all", (req, res) => {
   });
 });
 
+//Grabs all posts for a user - good for myprofile
+router.get("/mine", (req, res) => {
+  Post.findAll({
+    where: { userId: req.user.id }
+  })
+    .then(post => res.status(200).json(post))
+    .catch(err => res.status(500).json({ error: err }));
+});
+
 //Create new post
 
 router.post("/create", function(req, res) {
