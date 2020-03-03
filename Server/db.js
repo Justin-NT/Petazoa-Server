@@ -14,21 +14,10 @@ sequelize.authenticate().then(
   }
 );
 
-// database associations - all routes to user, with comments connected to the post
+// database associations - Profile belongsTo User to attach userId
 
 const Users = sequelize.import("./models/user");
-const Posts = sequelize.import("./models/post");
 const Profile = sequelize.import("./models/profile");
-const Comments = sequelize.import("./models/comment");
-
-// Users.hasMany(Posts);
-// Posts.belongsTo(Users, { foreignKey: "userId" });
-
-// Users.hasMany(Comments);
-// Comments.belongsTo(Users, { foreignKey: "userForTheCommentId" });
-// Comments.belongsTo(Posts, { foreignKey: "postId" });
-// Posts.hasMany(Comments);
-// Comments.belongsTo(Posts);
 
 Users.hasOne(Profile);
 Profile.belongsTo(Users);

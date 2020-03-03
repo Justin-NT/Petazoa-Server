@@ -5,26 +5,23 @@ let User = sequelize.import("../models/user");
 let bcrypt = require("bcryptjs");
 let jwt = require("jsonwebtoken");
 
+//Signup for an account
+
 router.post("/signup", (req, res) => {
-  let firstname = req.body.firstname;
-  let lastname = req.body.lastname;
-  let email = req.body.email;
   let password = req.body.password;
-  let admin = req.body.admin;
 
   User.create({
-    firstname: firstname,
-    lastname: lastname,
-    email: email,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    email: req.body.email,
     password: bcrypt.hashSync(password, 13),
-    admin: admin
+    admin: req.body.admin
   })
     .then(
       (createSuccess = user => {
         let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
           expiresIn: 60 * 60 * 24
         });
-
         res.json({
           user: user,
           message: "User created",
@@ -39,6 +36,8 @@ router.post("/signup", (req, res) => {
       })
     );
 });
+
+//Signin a current user
 
 router.post("/signin", (req, res) => {
   User.findOne({ where: { email: req.body.email } }).then(
