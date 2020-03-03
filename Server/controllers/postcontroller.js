@@ -3,6 +3,15 @@ let Post = require("../db").import("../models/post");
 let User = require("../db").import("../models/user");
 let Comment = require("../db").import("../models/comment");
 
+//Get personal posts
+router.get("/mine", (req, res) => {
+  Post.findAll({
+    where: { userId: req.user.id }
+  })
+    .then(post => res.status(200).json(post))
+    .catch(err => res.status(500).json({ error: err }));
+});
+
 //Grab all posts and the associated comments - good for news feed
 router.get("/all", (req, res) => {
   Post.findAll({ include: "comments" }).then(post => {
@@ -92,6 +101,27 @@ router.delete("/:id", (req, res) => {
         res.send(500, err.message);
       })
     );
+});
+
+//Delete functionality for admin
+router.delete("/admin/:id", (req, res) => {
+  if (req.user.admin === true) {
+    Post.destroy({
+      where: { id: req.params.id }
+    })
+      .then(
+        (deletePostSuccess = post => {
+          res.send("Big brother has censored this post");
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  } else {
+    return "no big brother";
+  }
 });
 
 module.exports = router;

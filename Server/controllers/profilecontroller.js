@@ -111,4 +111,24 @@ router.delete("/:id", (req, res) => {
     );
 });
 
+//Delete functionality for admin
+router.delete("/admin/:id", (req, res) => {
+  if (req.user.admin === true) {
+    Profile.destroy({
+      where: { id: req.params.id }
+    })
+      .then(
+        (deleteProfileSuccess = profile => {
+          res.send("Big brother has censored this profile");
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  } else {
+    return "no big brother";
+  }
+});
 module.exports = router;

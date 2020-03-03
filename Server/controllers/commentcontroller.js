@@ -80,4 +80,24 @@ router.delete("/:id", (req, res) => {
     );
 });
 
+//Delete functionality for admin
+router.delete("/admin/:id", (req, res) => {
+  if (req.user.admin === true) {
+    Comment.destroy({
+      where: { id: req.params.id }
+    })
+      .then(
+        (deleteCommentSuccess = comment => {
+          res.send("Big brother has censored this comment");
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  } else {
+    return "no big brother";
+  }
+});
 module.exports = router;
