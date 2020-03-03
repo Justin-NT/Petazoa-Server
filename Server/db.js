@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 
 const sequelize = new Sequelize(
-  "Social-Pet-Site",
+  "Petazoa",
   "postgres",
   process.env.PASS,
   {
