@@ -10,6 +10,7 @@ let sequelize = require("./db");
 // let multer = require("./middleware/multer");
 
 sequelize.sync();
+// sequelize.sync({ force: true });
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use(require("./middleware/headers"));
