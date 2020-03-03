@@ -22,8 +22,8 @@ app.use("/profiles", profile);
 app.use("/posts", posts);
 app.use("/comments", comment);
 
-app.listen(3000, function() {
-  console.log("App is listening on 3000");
+app.listen(process.env.PORT, function() {
+  console.log(`App is listening on port ${process.env.PORT}`);
 });
 
 app.use("/api/test", function(req, res) {
