@@ -41,7 +41,8 @@ router.post("/create/:id", (req, res) => {
 router.get("/:id", (req, res) => {
   Comment.findAll({
     where: { postId: req.params.id },
-    include: "post"
+    include: "post",
+    order: [["createdAt", "ASC"]]
   })
     .then(comment => res.json({ comment: comment }))
     .catch(err => res.status(500).json({ error: err }));

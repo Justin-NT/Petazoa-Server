@@ -6,7 +6,8 @@ let Comment = require("../db").import("../models/comment");
 //Get personal posts
 router.get("/mine", (req, res) => {
   Post.findAll({
-    where: { userId: req.user.id }
+    where: { userId: req.user.id },
+    order: [["createdAt", "DESC"]]
   })
     .then(post => res.status(200).json(post))
     .catch(err => res.status(500).json({ error: err }));
