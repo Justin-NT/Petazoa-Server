@@ -88,19 +88,35 @@ router.put("/:id", (req, res) => {
 
 //Delete a post
 router.delete("/:id", (req, res) => {
-  Post.destroy({
-    where: { id: req.params.id, userId: req.user.id }
-  })
-    .then(
-      (deletePostSuccess = post => {
-        res.json({ message: "post has been removed", post: post });
-      })
-    )
-    .catch(
-      (deleteError = err => {
-        res.send(500, err.message);
-      })
-    );
+  if (req.user.admin === true) {
+    Post.destroy({
+      where: { id: req.params.id }
+    })
+      .then(
+        (deletePostSuccess = post => {
+          res.send("Big brother has censored this post");
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  } else {
+    Post.destroy({
+      where: { id: req.params.id, userId: req.user.id }
+    })
+      .then(
+        (deletePostSuccess = post => {
+          res.json({ message: "post has been removed", post: post });
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  }
 });
 
 //Delete functionality for admin

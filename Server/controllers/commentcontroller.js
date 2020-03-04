@@ -65,19 +65,35 @@ router.put("/:id", (req, res) => {
 
 //Delete a comment
 router.delete("/:id", (req, res) => {
-  Comment.destroy({
-    where: { id: req.params.id, userId: req.user.id }
-  })
-    .then(
-      (deleteCommentSuccess = comment => {
-        res.json({ message: "comment has been removed" });
-      })
-    )
-    .catch(
-      (deleteError = err => {
-        res.json({ statusCode: 500, message: err.message });
-      })
-    );
+  if (req.user.admin === true) {
+    Comment.destroy({
+      where: { id: req.params.id }
+    })
+      .then(
+        (deleteCommentSuccess = comment => {
+          res.send("Big brother has censored this comment");
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  } else {
+    Comment.destroy({
+      where: { id: req.params.id, userId: req.user.id }
+    })
+      .then(
+        (deleteCommentSuccess = comment => {
+          res.json({ message: "comment has been removed" });
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.json({ statusCode: 500, message: err.message });
+        })
+      );
+  }
 });
 
 //Delete functionality for admin
