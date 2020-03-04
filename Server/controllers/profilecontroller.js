@@ -59,8 +59,8 @@ router.post("/create", (req, res, next) => {
     animal: req.body.animal,
     gender: req.body.gender,
     bio: req.body.bio,
-    userId: req.user.id
-    // profilePicture: req.file.path
+    userId: req.user.id,
+    profilePicture: req.body.profilePicture
   })
     .then(profile => res.status(200).json(profile))
     .catch(err => res.json(err.message));
