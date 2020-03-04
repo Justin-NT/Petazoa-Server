@@ -59,7 +59,7 @@ router.post("/create", upload.single("profilePicture"), (req, res, next) => {
     gender: req.body.gender,
     bio: req.body.bio,
     userId: req.user.id,
-    profilePicture: req.file.path
+    profilePicture: req.body.profilePicture
   })
     .then(profile => res.status(200).json(profile))
     .catch(err => res.json(err.message));
