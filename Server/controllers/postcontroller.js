@@ -6,7 +6,8 @@ let Comment = require("../db").import("../models/comment");
 //Get personal posts
 router.get("/mine", (req, res) => {
   Post.findAll({
-    where: { userId: req.user.id }
+    where: { userId: req.user.id },
+    order: [["createdAt", "DESC"]]
   })
     .then(post => res.status(200).json(post))
     .catch(err => res.status(500).json({ error: err }));
@@ -88,19 +89,35 @@ router.put("/:id", (req, res) => {
 
 //Delete a post
 router.delete("/:id", (req, res) => {
-  Post.destroy({
-    where: { id: req.params.id, userId: req.user.id }
-  })
-    .then(
-      (deletePostSuccess = post => {
-        res.json({ message: "post has been removed", post: post });
-      })
-    )
-    .catch(
-      (deleteError = err => {
-        res.send(500, err.message);
-      })
-    );
+  if (req.user.admin === true) {
+    Post.destroy({
+      where: { id: req.params.id }
+    })
+      .then(
+        (deletePostSuccess = post => {
+          res.send("Big brother has censored this post");
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  } else {
+    Post.destroy({
+      where: { id: req.params.id, userId: req.user.id }
+    })
+      .then(
+        (deletePostSuccess = post => {
+          res.json({ message: "post has been removed", post: post });
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  }
 });
 
 //Delete functionality for admin

@@ -96,19 +96,35 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  Profile.destroy({
-    where: { id: req.params.id, userId: req.user.id }
-  })
-    .then(
-      (deleteProfileSuccess = profile => {
-        res.send("profile has been removed");
-      })
-    )
-    .catch(
-      (deleteError = err => {
-        res.send(500, err.message);
-      })
-    );
+  if (req.user.admin === true) {
+    Profile.destroy({
+      where: { id: req.params.id }
+    })
+      .then(
+        (deleteProfileSuccess = profile => {
+          res.send("Big brother has censored this profile");
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  } else {
+    Profile.destroy({
+      where: { id: req.params.id, userId: req.user.id }
+    })
+      .then(
+        (deleteProfileSuccess = profile => {
+          res.send("profile has been removed");
+        })
+      )
+      .catch(
+        (deleteError = err => {
+          res.send(500, err.message);
+        })
+      );
+  }
 });
 
 //Delete functionality for admin
