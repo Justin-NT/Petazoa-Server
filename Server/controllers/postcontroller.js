@@ -2,6 +2,39 @@ let router = require("express").Router();
 let Post = require("../db").import("../models/post");
 let User = require("../db").import("../models/user");
 let Comment = require("../db").import("../models/comment");
+let multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function(req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: function(req, file, cb) {
+    checkFileType(file, cb);
+  }
+});
+
+function checkFileType(file, cb) {
+  // Allowed extensions
+  const filetypes = /jpeg|jpg|png|gif/;
+
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype) {
+    return cb(null, true);
+  } else {
+    cb("Error: Images Only!");
+  }
+}
 
 //Get personal posts
 router.get("/mine", (req, res) => {
@@ -40,14 +73,15 @@ router.get("/mine", (req, res) => {
 
 //Create new post
 
-router.post("/create", function(req, res) {
-  console.log("README", req.user);
-
+router.post("/create", upload.single("postPicture"), function(req, res) {
+  console.log("README", req.file.path);
+  console.log("REQUEST IS HERE", req.body);
+  let postBody = JSON.parse(req.body.body);
+  console.log("POOOSSSTTT BOOODY:", postBody);
   Post.create({
-    title: req.body.title,
-    feeling: req.body.feeling,
-    body: req.body.body,
-    userId: req.user.id
+    body: postBody.body,
+    userId: req.user.id,
+    postPicture: req.file.path
   })
     .then(post => res.status(200).json(post))
     .catch(err => res.json(err.message));
