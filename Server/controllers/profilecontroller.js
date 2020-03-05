@@ -45,22 +45,16 @@ router.get("/mine", (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
-router.post("/create", upload.single("profilePicture"), (req, res, next) => {
-  // upload.single("profilePicture"),
+router.post("/create", (req, res) => {
   console.log("HEEEEEERRRREEEEEEEEE", req);
-  // let name = req.body.name;
-  // let animal = req.body.animal;
-  // let gender = req.body.gender;
-  // let bio = req.body.bio;
-  // let userId = req.user.id;
 
   Profile.create({
     name: req.body.name,
     animal: req.body.animal,
     gender: req.body.gender,
     bio: req.body.bio,
-    userId: req.user.id,
-    profilePicture: req.file.path
+    userId: req.user.id
+    // profilePicture: req.file.path
   })
     .then(profile => res.status(200).json(profile))
     .catch(err => res.json(err.message));
