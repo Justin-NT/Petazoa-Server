@@ -3,6 +3,10 @@ module.exports = (sequelize, DataTypes) => {
     body: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    postPicture: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   });
 

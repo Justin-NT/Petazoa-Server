@@ -45,9 +45,9 @@ router.get("/mine", (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 });
 
-router.post("/create", (req, res, next) => {
+router.post("/create", upload.single("profilePicture"), (req, res, next) => {
   // upload.single("profilePicture"),
-  console.log(req.file);
+  console.log("HEEEEEERRRREEEEEEEEE", req);
   // let name = req.body.name;
   // let animal = req.body.animal;
   // let gender = req.body.gender;
@@ -60,7 +60,7 @@ router.post("/create", (req, res, next) => {
     gender: req.body.gender,
     bio: req.body.bio,
     userId: req.user.id,
-    profilePicture: req.body.profilePicture
+    profilePicture: req.file.path
   })
     .then(profile => res.status(200).json(profile))
     .catch(err => res.json(err.message));
